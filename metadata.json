@@ -1,0 +1,7 @@
+{
+  "name": " Gato Laranja Empréstimos",
+  "description": "Protótipo de aplicativo mobile para solicitações de empréstimos com temática de gato laranja e interface moderna escura.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
