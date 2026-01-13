@@ -14,15 +14,17 @@ const App: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
 
-  // Load applications from local storage
   useEffect(() => {
     const saved = localStorage.getItem('gato_laranja_apps');
     if (saved) {
-      setApplications(JSON.parse(saved));
+      try {
+        setApplications(JSON.parse(saved));
+      } catch (e) {
+        console.error("Erro ao carregar dados locais:", e);
+      }
     }
   }, []);
 
-  // Save applications to local storage
   const saveApps = (newApps: Application[]) => {
     setApplications(newApps);
     localStorage.setItem('gato_laranja_apps', JSON.stringify(newApps));
@@ -69,7 +71,7 @@ const App: React.FC = () => {
             onUpdateStatus={updateAppStatus} 
             onBack={() => navigateTo(Screen.ADMIN_DASHBOARD)} 
           />
-        ) : null;
+        ) : <AdminDashboard applications={applications} onSelectApp={(id) => navigateTo(Screen.ADMIN_DETAILS, id)} onLogout={() => navigateTo(Screen.HOME)} />;
       case Screen.PERSONAL:
       case Screen.DRIVERS:
       case Screen.BUSINESS:
@@ -87,21 +89,25 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] flex flex-col max-w-md mx-auto relative shadow-2xl border-x border-zinc-800">
+    <div className="min-h-screen bg-[#0f0f0f] flex flex-col max-w-md mx-auto relative shadow-2xl border-x border-zinc-900">
       <Header onLogoClick={() => navigateTo(Screen.HOME)} />
       
-      <main className="flex-1 pb-8">
+      <main className="flex-1 pb-10">
         {renderScreen()}
       </main>
 
-      <footer className="py-4 text-center border-t border-zinc-900 flex flex-col gap-2">
-        <span className="text-zinc-600 text-xs">&copy; 2024 Gato Laranja Empréstimos S.A.</span>
-        <button 
-          onClick={() => navigateTo(Screen.ADMIN_LOGIN)}
-          className="text-zinc-800 hover:text-[#ff8c00] text-[10px] uppercase font-bold tracking-tighter transition-colors"
-        >
-          Área do Administrador
-        </button>
+      <footer className="py-6 text-center border-t border-zinc-900 bg-zinc-950/50 flex flex-col gap-3">
+        <span className="text-zinc-600 text-[10px] font-medium tracking-widest uppercase">
+          &copy; 2024 Gato Laranja Empréstimos S.A.
+        </span>
+        <div className="flex justify-center">
+          <button 
+            onClick={() => navigateTo(Screen.ADMIN_LOGIN)}
+            className="text-zinc-800 hover:text-laranja text-[9px] uppercase font-black tracking-tighter transition-all border border-zinc-900 px-3 py-1 rounded-full hover:border-laranja/30"
+          >
+            Acesso Restrito ao Administrador
+          </button>
+        </div>
       </footer>
     </div>
   );
